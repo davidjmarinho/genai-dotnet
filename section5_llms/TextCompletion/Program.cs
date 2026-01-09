@@ -78,21 +78,33 @@ IChatClient client = new OpenAIClient(credential, options)
 #endregion
 
 #region Summarization
-var summarizationPrompt = """
+// var summarizationPrompt = """
 
-Summarize the following blog in 1 concise sentence:
+// Summarize the following blog in 1 concise sentence:
 
-"Microservice architecture has revolutionized the way we build and deploy applications. By breaking down applications into smaller, independent services, developers can work on different components simultaneously, leading to faster development cycles and more scalable solutions. Each microservice can be developed, deployed, and scaled independently, allowing for greater flexibility and resilience. This approach also facilitates continuous integration and continuous deployment (CI/CD) practices, enabling teams to deliver updates and new features more frequently. However, adopting microservices also comes with challenges such as increased complexity in managing inter-service communication, data consistency, and monitoring. Overall, microservice architecture offers significant benefits for modern application development when implemented thoughtfully."
+// "Microservice architecture has revolutionized the way we build and deploy applications. By breaking down applications into smaller, independent services, developers can work on different components simultaneously, leading to faster development cycles and more scalable solutions. Each microservice can be developed, deployed, and scaled independently, allowing for greater flexibility and resilience. This approach also facilitates continuous integration and continuous deployment (CI/CD) practices, enabling teams to deliver updates and new features more frequently. However, adopting microservices also comes with challenges such as increased complexity in managing inter-service communication, data consistency, and monitoring. Overall, microservice architecture offers significant benefits for modern application development when implemented thoughtfully."
 
-""";
-Console.WriteLine($"\nuser ==> {summarizationPrompt}");
+// """;
+// Console.WriteLine($"\nuser ==> {summarizationPrompt}");
 
-ChatResponse summarizationResponse = await client.GetResponseAsync(summarizationPrompt);
+// ChatResponse summarizationResponse = await client.GetResponseAsync(summarizationPrompt);
 
-Console.WriteLine($"assistant ==> \n{summarizationResponse}");
+// Console.WriteLine($"assistant ==> \n{summarizationResponse}");
 
 #endregion
 
 #region Sentiment Analysis
+var analysisPrompt = """
+    You will analyze the sentiment of the following product reviews.
+    Each line is its own revieww. Output the sentiment of each review in bullet points as either 'positive', 'negative', or 'neutral'.
 
+    I bought this product last week and it works great! I love it.
+    This product is terrible, it broke after one use.
+    I'm not sure how I feel about this product.
+    I found this product based on the reviews. It worked for a bit, and then stopped working.
+    """;
+
+Console.WriteLine($"\nuser ==> {analysisPrompt}");
+ChatResponse analysisResponse = await client.GetResponseAsync(analysisPrompt);
+Console.WriteLine($"assistant ==> \n{analysisResponse}");
 #endregion
