@@ -41,6 +41,10 @@ IChatClient client = new OpenAIClient(credential, options)
 
 #endregion
 
+
+
+
+
 #region Streaming Text Completion
 //send prompt and get response
 // string prompt = "Quel sont les problèmes et la bonnes choses du Brazil? expliquez en 200 mots maximum.";
@@ -112,65 +116,114 @@ IChatClient client = new OpenAIClient(credential, options)
 
 #region Structured Output
 
-var carListings = new[]
-{
-        "Check out this 2015 Toyota Camry for $15,000 with 50,000 miles.",
-        "Selling my 2018 Honda Accord, only $18,500 and has 30,000 miles.",
-        "2017 Ford Fusion available for $14,500, driven 40,000 miles.",
-        "Brand new 2020 Tesla Model 3, priced at $35,000 with just 10,000 miles.",
-        "Selling a 2016 Chevrolet Malibu for $13,000, has 60,000 miles.",
-        "Lease my 2019 BMW 3 Series, $40,000, only 20,000 miles.",
-        "Lease a 2021 Audi A4 for $42,000, with just 15,000 miles.",
-};
+// var carListings = new[]
+// {
+//         "Check out this 2015 Toyota Camry for $15,000 with 50,000 miles.",
+//         "Selling my 2018 Honda Accord, only $18,500 and has 30,000 miles.",
+//         "2017 Ford Fusion available for $14,500, driven 40,000 miles.",
+//         "Brand new 2020 Tesla Model 3, priced at $35,000 with just 10,000 miles.",
+//         "Selling a 2016 Chevrolet Malibu for $13,000, has 60,000 miles.",
+//         "Lease my 2019 BMW 3 Series, $40,000, only 20,000 miles.",
+//         "Lease a 2021 Audi A4 for $42,000, with just 15,000 miles.",
+// };
 
-foreach (var listingText in carListings)
-{
-    var response = await client.GetResponseAsync<CarDetails>(
-        $"""
-        Convert the following car listing into a JSON object matching this C# class with the properties:
-        Condition: "New" or "Used"
-        Make: (car manufacturer)
-        Model: (car model)
-        Year: (four-digit-year)
-        ListingType: "Sale" or "Lease"
-        Price: (integer only, no currency symbol)
-        Features: (array of short strings, e.g., "Bluetooth", "Backup Camera", etc.)
-        TenWordSummary:  exactly ten words to summarize this listing
+// foreach (var listingText in carListings)
+// {
+//     var response = await client.GetResponseAsync<CarDetails>(
+//         $"""
+//         Convert the following car listing into a JSON object matching this C# class with the properties:
+//         Condition: "New" or "Used"
+//         Make: (car manufacturer)
+//         Model: (car model)
+//         Year: (four-digit-year)
+//         ListingType: "Sale" or "Lease"
+//         Price: (integer only, no currency symbol)
+//         Features: (array of short strings, e.g., "Bluetooth", "Backup Camera", etc.)
+//         TenWordSummary:  exactly ten words to summarize this listing
 
-        Here is the listing: "{listingText}"
-        """);
+//         Here is the listing: "{listingText}"
+//         """);
 
-    if (response.TryGetResult(out var info))
+//     if (response.TryGetResult(out var info))
+//     {
+//         Console.WriteLine($"Listing: {listingText}");
+//         Console.WriteLine($"Parsed JSON: {System.Text.Json.JsonSerializer.Serialize(
+//             info, new System.Text.Json.JsonSerializerOptions { WriteIndented = true })}");
+//         Console.WriteLine();
+//     }
+//     else
+//     {
+//         Console.WriteLine($"Failed to parse listing: {listingText}");
+//     }
+
+// }
+
+// class CarDetails
+// {
+//     public required string Condition { get; set; } //e.g., "Used" or "New"
+//     public required string Make { get; set; }
+//     public required string Model { get; set; }
+//     public required int Year { get; set; }
+//     public CarListingType ListingType { get; set; }
+//     public required int Price { get; set; }
+//     public required string[] Features { get; set; }
+//     public required string TenWordSummary { get; set; }
+// }
+
+// [JsonConverter(typeof(JsonStringEnumConverter))]
+// enum CarListingType
+// {
+//     Sale,
+//     Lease
+// }
+
+#endregion
+
+#region ChatApp
+//Start the conversation with context for the AI model
+
+List<ChatMessage> chatHistory = new()
     {
-        Console.WriteLine($"Listing: {listingText}");
-        Console.WriteLine($"Parsed JSON: {System.Text.Json.JsonSerializer.Serialize(
-            info, new System.Text.Json.JsonSerializerOptions { WriteIndented = true })}");
-        Console.WriteLine();
-    }
-    else
+        new ChatMessage(ChatRole.System, """
+        You are a friendly hiking enthusiast who loves to help people plan their hiking trips.
+        You introduce yourself when first saying hello and ask how you can help.
+        When helping people out, you always ask them for this 
+        information to inform the hiking recommendation you provide:
+
+        1. The location where they would like to hike
+        2. What hiking intensity they are looking for
+
+        You will then provide three suggestions for nearby hikes that vary in 
+        the length after you get that information. You will also share an interesting fact
+        about the local nature on the hikes when making recommendations. At the end of you
+        response, ask if there is anything else you can help with.
+        """)
+    };
+
+while (true)
+{
+    // Get user prompt and add to chat history
+    Console.Write("\nYou prompt: ");
+    var userPrompt = Console.ReadLine();
+    chatHistory.Add(new ChatMessage(ChatRole.User, userPrompt ?? string.Empty));
+    if (string.IsNullOrWhiteSpace(userPrompt))
     {
-        Console.WriteLine($"Failed to parse listing: {listingText}");
+        break;
     }
 
+    // Stream the AI response and add to chat history
+    Console.WriteLine("AI Response:");
+    var response = "";
+    await foreach (var item in
+        client.GetStreamingResponseAsync(chatHistory))
+    {
+        Console.Write(item.Text);
+        response += item.Text;
+    }
+
+    chatHistory.Add(new ChatMessage(ChatRole.Assistant, response));
+    Console.WriteLine();
 }
 
-class CarDetails
-{
-    public required string Condition { get; set; } //e.g., "Used" or "New"
-    public required string Make { get; set; }
-    public required string Model { get; set; }
-    public required int Year { get; set; }
-    public CarListingType ListingType { get; set; }
-    public required int Price { get; set; }
-    public required string[] Features { get; set; }
-    public required string TenWordSummary { get; set; }
-}
-
-[JsonConverter(typeof(JsonStringEnumConverter))]
-enum CarListingType
-{
-    Sale,
-    Lease
-}
 
 #endregion

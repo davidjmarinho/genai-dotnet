@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "section5_llms", "section5_l
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextCompletion", "section5_llms\TextCompletion\TextCompletion.csproj", "{6BA69B43-BAA5-462C-BCA8-E37298F7744C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextCompletion_Ollama", "section5_llms\TextCompletion_Ollama\TextCompletion_Ollama.csproj", "{A087C9A6-1C3E-4D5E-B0A2-C895547E1D69}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,11 +31,24 @@ Global
 		{6BA69B43-BAA5-462C-BCA8-E37298F7744C}.Release|x64.Build.0 = Release|Any CPU
 		{6BA69B43-BAA5-462C-BCA8-E37298F7744C}.Release|x86.ActiveCfg = Release|Any CPU
 		{6BA69B43-BAA5-462C-BCA8-E37298F7744C}.Release|x86.Build.0 = Release|Any CPU
+		{A087C9A6-1C3E-4D5E-B0A2-C895547E1D69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A087C9A6-1C3E-4D5E-B0A2-C895547E1D69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A087C9A6-1C3E-4D5E-B0A2-C895547E1D69}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A087C9A6-1C3E-4D5E-B0A2-C895547E1D69}.Debug|x64.Build.0 = Debug|Any CPU
+		{A087C9A6-1C3E-4D5E-B0A2-C895547E1D69}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A087C9A6-1C3E-4D5E-B0A2-C895547E1D69}.Debug|x86.Build.0 = Debug|Any CPU
+		{A087C9A6-1C3E-4D5E-B0A2-C895547E1D69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A087C9A6-1C3E-4D5E-B0A2-C895547E1D69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A087C9A6-1C3E-4D5E-B0A2-C895547E1D69}.Release|x64.ActiveCfg = Release|Any CPU
+		{A087C9A6-1C3E-4D5E-B0A2-C895547E1D69}.Release|x64.Build.0 = Release|Any CPU
+		{A087C9A6-1C3E-4D5E-B0A2-C895547E1D69}.Release|x86.ActiveCfg = Release|Any CPU
+		{A087C9A6-1C3E-4D5E-B0A2-C895547E1D69}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{6BA69B43-BAA5-462C-BCA8-E37298F7744C} = {F1875F12-D07F-1C71-9533-C3F1ED9CE8EF}
+		{A087C9A6-1C3E-4D5E-B0A2-C895547E1D69} = {F1875F12-D07F-1C71-9533-C3F1ED9CE8EF}
 	EndGlobalSection
 EndGlobal
